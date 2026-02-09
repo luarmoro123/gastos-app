@@ -20,16 +20,15 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
 
- // Aceptamos un objeto Date (por defecto es hoy)
+
+  {/* --- FUNCION LOADEXPENSES --- */}
+  // CARGAR GASTOS  
   const loadExpenses = async (date: Date = new Date()) => {
     setLoading(true);
     try {
-      // Extraemos mes y año para la URL
-      // format(date, 'MM') devuelve "02", "12", etc.
       const month = format(date, 'MM'); 
       const year = format(date, 'yyyy');
-
-      // Hacemos la petición con los filtros
+      // petición con los filtros del mes y año
       const response = await fetch(`${API_URL}?month=${month}&year=${year}`);
       const data = await response.json();
       setExpenses(data);
@@ -39,13 +38,16 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     }
   };
+  {/* --------------------------------------*/}
 
   // El useEffect inicial carga el mes actual
   useEffect(() => {
     loadExpenses(new Date());
   }, []);
 
-  // Nota: Ahora recibimos el gasto SIN id, porque Mongo lo genera
+
+  {/* --- FUNCION ADDEXPENSE --- */}
+  // AGREGAR GASTO
   const addExpense = async (expenseData: Omit<Expense, 'id'>) => {
     try {
       // 1. Enviar al servidor
@@ -63,7 +65,11 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
       console.error("Error guardando en API:", e);
     }
   };
+  {/* --------------------------------------*/}
 
+
+  {/* --- FUNCION DELETEEXPENSE --- */}
+  // BORRAR GASTO
   const deleteExpense = async (id: string) => {
     try {
       // 1. Borrar en servidor
@@ -77,12 +83,16 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
       console.error("Error borrando en API:", e);
     }
   };
+  {/* --------------------------------------*/}
 
+
+  {/* --- RETURN --- */}
   return (
     <ExpenseContext.Provider value={{ expenses, loading, addExpense, deleteExpense, loadExpenses }}>
       {children}
     </ExpenseContext.Provider>
   );
+  {/* --------------------------------------*/}
 };
 
 export const useExpenses = () => {

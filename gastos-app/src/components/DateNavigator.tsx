@@ -8,7 +8,7 @@ interface DateNavigatorProps {
   date: Date;
   onChangeMonth: (increment: number) => void;
 }
-
+{/* --- COMPONENTE FECHA --- */}
 export const DateNavigator = ({ date, onChangeMonth }: DateNavigatorProps) => {
   return (
     <View style={styles.container}>
@@ -28,7 +28,9 @@ export const DateNavigator = ({ date, onChangeMonth }: DateNavigatorProps) => {
     </View>
   );
 };
+{/* -------------------------------------- */}
 
+{/* --- ESTILOS --- */}
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
@@ -43,3 +45,4 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize'
   }
 });
+{/* -------------------------------------- */}  

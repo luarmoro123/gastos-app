@@ -7,7 +7,7 @@ interface Props {
   item: Expense;
   onDelete: (id: string) => void;
 }
-
+{/* --- COMPONENTE ITEM --- */}
 export const ExpenseItem = ({ item, onDelete }: Props) => {
   const theme = useTheme();
 
@@ -24,7 +24,10 @@ export const ExpenseItem = ({ item, onDelete }: Props) => {
     if (catLower.includes('gym')) return 'weight-lifter';
     return 'shape';
   };
+  {/* --------------------------------------*/}
 
+
+  {/* --- CARD GASTOS --- */}
   return (
     <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
       <Card.Title
@@ -57,8 +60,11 @@ export const ExpenseItem = ({ item, onDelete }: Props) => {
     </Card>
   );
 };
+{/* -------------------------------------- */}
 
+{/* --- ESTILOS --- */}
 const styles = StyleSheet.create({
   card: { marginBottom: 12 },
   rightContainer: { flexDirection: 'row', alignItems: 'center' },
 });
+{/* -------------------------------------- */}  

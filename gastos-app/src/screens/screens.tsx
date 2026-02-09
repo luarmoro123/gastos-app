@@ -17,15 +17,18 @@ export const MainScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const theme = useTheme();
 
+  {/* --- FUNCION CHANGEMONTH --- */}
+  // CAMBIAR MES
   const handleChangeMonth = (increment: number) => {
     const newDate = increment > 0 
       ? addMonths(currentDate, 1) 
       : subMonths(currentDate, 1);
-      
     setCurrentDate(newDate);
-    loadExpenses(newDate); // <--- Aquí pedimos los datos nuevos al backend
+    loadExpenses(newDate);
   };
+  {/* --------------------------------------*/}
 
+  {/* --- LOADING --- */}
   if (loading) {
     return (
       <View style={[styles.center, { backgroundColor: theme.colors.background }]}>
@@ -33,7 +36,9 @@ export const MainScreen = () => {
       </View>
     );
   }
+  {/* --------------------------------------*/} 
 
+  {/* --- RETORNA LA PANTALLA PRINCIPAL --- */}
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <DateNavigator date={currentDate} onChangeMonth={handleChangeMonth} />
@@ -69,7 +74,9 @@ export const MainScreen = () => {
     </View>
   );
 };
+{/* --------------------------------------*/}
 
+{/* --- ESTILOS --- */}
 const styles = StyleSheet.create({
   container: { flex: 1, paddingTop: 50 },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
@@ -77,3 +84,4 @@ const styles = StyleSheet.create({
   emptyState: { marginTop: 50, alignItems: 'center', opacity: 0.7 },
   fab: { position: 'absolute', margin: 16, right: 0, bottom: 0 },
 });
+{/* --------------------------------------*/}
