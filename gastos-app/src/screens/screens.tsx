@@ -4,14 +4,27 @@ import { Text, FAB, ActivityIndicator, useTheme } from 'react-native-paper';
 import { useExpenses } from '../context/ExpenseContext';
 
 // Importamos los nuevos componentes
+import { DateNavigator } from '../components/DateNavigator';
 import { ExpenseItem } from '../components/ExpenseItem';
 import { ExpenseHeader } from '../components/ExpenseHeader';
 import { AddExpenseModal } from '../components/AddExpenseModal';
+import { addMonths, subMonths } from 'date-fns';
 
 export const MainScreen = () => {
-  const { expenses, loading, deleteExpense } = useExpenses();
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const { expenses, loading, deleteExpense, loadExpenses } = useExpenses();
+
   const [isModalVisible, setModalVisible] = useState(false);
   const theme = useTheme();
+
+  const handleChangeMonth = (increment: number) => {
+    const newDate = increment > 0 
+      ? addMonths(currentDate, 1) 
+      : subMonths(currentDate, 1);
+      
+    setCurrentDate(newDate);
+    loadExpenses(newDate); // <--- Aquí pedimos los datos nuevos al backend
+  };
 
   if (loading) {
     return (
@@ -23,6 +36,7 @@ export const MainScreen = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <DateNavigator date={currentDate} onChangeMonth={handleChangeMonth} />
       <FlatList
         data={expenses}
         keyExtractor={(item) => item.id}

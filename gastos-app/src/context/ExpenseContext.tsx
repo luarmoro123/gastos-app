@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import { Expense } from '../types';
+import { format } from 'date-fns';
 
 // CAMBIA ESTO SEGÚN TU CASO:
 const API_URL = 'http://10.0.2.2:3000/gastos'; 
@@ -10,6 +11,7 @@ interface ExpenseContextData {
   loading: boolean;
   addExpense: (expense: Omit<Expense, 'id'>) => Promise<void>; // Ya no necesitamos pasar ID, Mongo lo crea
   deleteExpense: (id: string) => Promise<void>;
+  loadExpenses: (date?: Date) => Promise<void>;
 }
 
 export const ExpenseContext = createContext<ExpenseContextData>({} as ExpenseContextData);
@@ -18,13 +20,17 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadExpenses();
-  }, []);
-
-  const loadExpenses = async () => {
+ // Aceptamos un objeto Date (por defecto es hoy)
+  const loadExpenses = async (date: Date = new Date()) => {
+    setLoading(true);
     try {
-      const response = await fetch(API_URL);
+      // Extraemos mes y año para la URL
+      // format(date, 'MM') devuelve "02", "12", etc.
+      const month = format(date, 'MM'); 
+      const year = format(date, 'yyyy');
+
+      // Hacemos la petición con los filtros
+      const response = await fetch(`${API_URL}?month=${month}&year=${year}`);
       const data = await response.json();
       setExpenses(data);
     } catch (e) {
@@ -33,6 +39,11 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
       setLoading(false);
     }
   };
+
+  // El useEffect inicial carga el mes actual
+  useEffect(() => {
+    loadExpenses(new Date());
+  }, []);
 
   // Nota: Ahora recibimos el gasto SIN id, porque Mongo lo genera
   const addExpense = async (expenseData: Omit<Expense, 'id'>) => {
@@ -68,7 +79,7 @@ export const ExpenseProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <ExpenseContext.Provider value={{ expenses, loading, addExpense, deleteExpense }}>
+    <ExpenseContext.Provider value={{ expenses, loading, addExpense, deleteExpense, loadExpenses }}>
       {children}
     </ExpenseContext.Provider>
   );
